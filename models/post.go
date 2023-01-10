@@ -89,3 +89,7 @@ func NewPost(frontMatter *FrontMatter, mdContent string) *Post {
 func (p *Post) CreatedAtStr() string {
 	return p.CreatedAt.Format("2006-01-02")
 }
+
+func (p *Post) PostPath() string {
+	return fmt.Sprintf("/post/%s", p.Title)
+}
