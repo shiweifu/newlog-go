@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// @import "./tailwind.css";
+
+nav.container {
+  @apply flex justify-between items-center;
+}
+
+.container {
+  @apply w-full;
+  @media (min-width: 768px) {
+    width: 960px;
+  }
+  margin: 0 auto;
+  @apply pl-4;
+  @apply pr-4;
+  @apply mt-4;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+}
+@import "./node_modules/github-markdown-css/github-markdown.css";
