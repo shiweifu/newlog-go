@@ -2,8 +2,7 @@
   "name": "newlog_frontend",
   "scripts": {
     "build": "npx parcel build --target css --target js --no-cache",
-    "watch": "npx parcel watch --target css --target js --no-cache",
-    "tailwind": "npx tailwindcss -o ./tailwind.css --watch"
+    "watch": "npx parcel watch --target css --target js --no-cache"
   },
   "version": "1.0.0",
   "license": "MIT",

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/adrg/frontmatter"
@@ -28,9 +29,17 @@ func (fm *FrontMatter) createdAtTime() time.Time {
 	return result
 }
 
+func (fm *FrontMatter) category() string {
+	if fm.Category == "" {
+		return fm.createdAtTime().Format("2006")
+	}
+	return fm.Category
+}
+
 type Post struct {
 	Title       string
 	CreatedAt   time.Time
+	Category    string
 	Private     bool
 	MdContent   string
 	HtmlContent string
@@ -46,6 +55,14 @@ func NewPostFormPath(filePath string) (*Post, error) {
 	contentBytes, err := frontmatter.Parse(bytes.NewReader(mdBytes), &matter)
 	if err != nil {
 		return nil, err
+	}
+
+	if matter.Title == "" {
+		// last path of file path
+		// 得到文件名称没有扩展名
+		fullName := strings.Split(filePath, "/")[len(strings.Split(filePath, "/"))-1]
+		fileName := strings.Split(fullName, ".")[0]
+		matter.Title = fileName
 	}
 
 	return NewPost(&matter, string(contentBytes)), nil
@@ -64,5 +81,10 @@ func NewPost(frontMatter *FrontMatter, mdContent string) *Post {
 		Private:     frontMatter.Private,
 		MdContent:   mdContent,
 		HtmlContent: htmlBuff.String(),
+		Category:    frontMatter.category(),
 	}
+}
+
+func (p *Post) CreatedAtStr() string {
+	return p.CreatedAt.Format("2006-01-02")
 }

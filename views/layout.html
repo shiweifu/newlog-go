@@ -8,9 +8,25 @@
     <title>{{ pageTitle }}</title>
   </head>
   <body>
-    {{ render "partials/nav.html" . }} 
+
+      <div class="mt-4 mb-4">
+      <nav class="container">
+        <div class="logo text-xl font-medium">
+          <a href="/">{{ pageTitle }}</a>
+        </div>
+        <div>
+          <ul>
+          </ul>
+        </div>
+      </nav>
+    </div>
     {{ yield . }}
-    {{ render "partials/footer.html" . }}
+    <div class="mt-12 pt-12 pb-12 font-serif text-center text-gray-700 text-small border-t">
+    <h3>a bite is better than nothing.</h3>
+    <p>© 2022 shiweifu</p>
+    </div>
+    {{/* {{ render "partials/nav.html" . }}  */}}
+    {{/* {{ render "partials/footer.html" . }} */}}
   </body>
   <script src="/assets/js/application.js"></script>
 </html>

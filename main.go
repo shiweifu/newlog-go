@@ -16,6 +16,18 @@ type Config struct {
 }
 
 var posts = make([]*models.Post, 0)
+var categories = make([]string, 0)
+
+func getCategories() []string {
+	if len(categories) > 0 {
+		return categories
+	}
+	results := make([]string, 0)
+	for _, p := range posts {
+		results = append(results, p.Category)
+	}
+	return results
+}
 
 func readConf(filename string) (*Config, error) {
 	buf, err := ioutil.ReadFile(filename)
@@ -73,6 +85,18 @@ func main() {
 		return "My Page Title"
 	})
 
+	tmpl.AddFunc("postsInCategory", func(category string) []*models.Post {
+		results := make([]*models.Post, 0)
+		for _, p := range posts {
+			fmt.Println(p.Category, category, p)
+			if p.Category == category {
+				results = append(results, p)
+			}
+		}
+		fmt.Println("-------", results)
+		return results
+	})
+
 	app.RegisterView(tmpl)
 
 	// 配置路由
@@ -89,5 +113,6 @@ func ping(ctx iris.Context) {
 
 func getHtmlTmp(ctx iris.Context) {
 	ctx.ViewData("title", "My Page Title")
+	ctx.ViewData("categories", getCategories())
 	ctx.View("index.html")
 }
