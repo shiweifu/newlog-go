@@ -29,6 +29,15 @@ func getCategories() []string {
 	return results
 }
 
+func getPost(title string) (*models.Post, error) {
+	for _, p := range posts {
+		if p.Title == title {
+			return p, nil
+		}
+	}
+	return nil, fmt.Errorf("post not found")
+}
+
 func readConf(filename string) (*Config, error) {
 	buf, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -93,7 +102,6 @@ func main() {
 				results = append(results, p)
 			}
 		}
-		fmt.Println("-------", results)
 		return results
 	})
 
@@ -102,7 +110,8 @@ func main() {
 	// 配置路由
 	// GET: http://localhost:8080/hello
 	app.Get("/ping", ping)
-	app.Get("/html", getHtmlTmp)
+	app.Get("/html", index)
+	app.Get("/post/{title}", post)
 
 	app.Listen(":8080")
 }
@@ -111,8 +120,20 @@ func ping(ctx iris.Context) {
 	ctx.WriteString("Hello from the server!")
 }
 
-func getHtmlTmp(ctx iris.Context) {
+func index(ctx iris.Context) {
 	ctx.ViewData("title", "My Page Title")
 	ctx.ViewData("categories", getCategories())
 	ctx.View("index.html")
+}
+
+func post(ctx iris.Context) {
+	title := ctx.Params().Get("title")
+	var post *models.Post
+	post, err := getPost(title)
+	if err != nil {
+		ctx.StatusCode(iris.StatusNotFound)
+	}
+	// 取消转义HTML
+	ctx.ViewData("post", post)
+	ctx.View("post")
 }

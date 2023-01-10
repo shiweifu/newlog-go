@@ -3,6 +3,7 @@ package models
 import (
 	"bytes"
 	"fmt"
+	"html/template"
 	"os"
 	"strings"
 	"time"
@@ -42,7 +43,7 @@ type Post struct {
 	Category    string
 	Private     bool
 	MdContent   string
-	HtmlContent string
+	HtmlContent template.HTML
 }
 
 func NewPostFormPath(filePath string) (*Post, error) {
@@ -80,7 +81,7 @@ func NewPost(frontMatter *FrontMatter, mdContent string) *Post {
 		CreatedAt:   frontMatter.createdAtTime(),
 		Private:     frontMatter.Private,
 		MdContent:   mdContent,
-		HtmlContent: htmlBuff.String(),
+		HtmlContent: template.HTML(htmlBuff.String()),
 		Category:    frontMatter.category(),
 	}
 }
