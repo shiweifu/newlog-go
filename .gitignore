@@ -49,3 +49,4 @@ dist/
 .cache/
 config.yml
 ./data/
+newlog-go
