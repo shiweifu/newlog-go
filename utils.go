@@ -15,9 +15,23 @@ func getCategories() []string {
 	}
 	results := make([]string, 0)
 	for _, p := range posts {
+		// 如果已经包含分类，则继续
+		if contains(results, p.Category) {
+			continue
+		}
 		results = append(results, p.Category)
 	}
-	return results
+	categories = results
+	return categories
+}
+
+func contains(results []string, s string) bool {
+	for _, v := range results {
+		if v == s {
+			return true
+		}
+	}
+	return false
 }
 
 func getPost(title string) (*models.Post, error) {
@@ -31,6 +45,8 @@ func getPost(title string) (*models.Post, error) {
 
 // 加载日志文件
 func loadData(blogPath string) {
+	posts = make([]*models.Post, 0)
+	categories = make([]string, 0)
 	// 遍历文件夹，找出所有的 .md 文件
 	entries, err := os.ReadDir(blogPath)
 	if err != nil {
@@ -50,6 +66,7 @@ func loadData(blogPath string) {
 			posts = append(posts, post)
 		}
 	}
+	_ = getCategories()
 }
 
 func watch(blogPath string) {
