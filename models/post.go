@@ -12,14 +12,14 @@ import (
 	"github.com/yuin/goldmark"
 )
 
-type FrontMatter struct {
+type PostFrontMatter struct {
 	Title        string `yaml:"title"`
 	CreatedAtStr string `yaml:"created_at"`
 	Private      bool   `yaml:"private"`
 	Category     string `yaml:"category"`
 }
 
-func (fm *FrontMatter) createdAtTime() time.Time {
+func (fm *PostFrontMatter) createdAtTime() time.Time {
 	// 转换时间
 	var result time.Time
 	if fm.CreatedAtStr != "" {
@@ -30,7 +30,7 @@ func (fm *FrontMatter) createdAtTime() time.Time {
 	return result
 }
 
-func (fm *FrontMatter) category() string {
+func (fm *PostFrontMatter) category() string {
 	if fm.Category == "" {
 		return fm.createdAtTime().Format("2006")
 	}
@@ -38,21 +38,18 @@ func (fm *FrontMatter) category() string {
 }
 
 type Post struct {
-	Title       string
-	CreatedAt   time.Time
-	Category    string
-	Private     bool
+	PostFrontMatter
 	MdContent   string
 	HtmlContent template.HTML
 }
 
-func NewPostFormPath(filePath string) (*Post, error) {
+func NewPostFormPath(filePath, defaultCategory string) (*Post, error) {
 	mdBytes, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
 	}
 
-	matter := FrontMatter{}
+	matter := PostFrontMatter{}
 	contentBytes, err := frontmatter.Parse(bytes.NewReader(mdBytes), &matter)
 	if err != nil {
 		return nil, err
@@ -64,32 +61,39 @@ func NewPostFormPath(filePath string) (*Post, error) {
 		fullName := strings.Split(filePath, "/")[len(strings.Split(filePath, "/"))-1]
 		fileName := strings.Split(fullName, ".")[0]
 		matter.Title = fileName
+		if matter.Category == "" {
+			matter.Category = defaultCategory
+		}
 	}
 
 	return NewPost(&matter, string(contentBytes)), nil
 }
 
-func NewPost(frontMatter *FrontMatter, mdContent string) *Post {
+func NewPost(frontMatter *PostFrontMatter, mdContent string) *Post {
 	var htmlBuff bytes.Buffer
 	// 解析 markdown 文件
 	if err := goldmark.Convert([]byte(mdContent), &htmlBuff); err != nil {
 		panic(err)
 	}
-	fmt.Println(htmlBuff.String())
 	return &Post{
-		Title:       frontMatter.Title,
-		CreatedAt:   frontMatter.createdAtTime(),
-		Private:     frontMatter.Private,
-		MdContent:   mdContent,
-		HtmlContent: template.HTML(htmlBuff.String()),
-		Category:    frontMatter.category(),
+		PostFrontMatter: *frontMatter,
+		MdContent:       mdContent,
+		HtmlContent:     template.HTML(htmlBuff.String()),
 	}
 }
 
-func (p *Post) CreatedAtStr() string {
-	return p.CreatedAt.Format("2006-01-02")
+func (p *Post) CreatedAt() time.Time {
+	return p.PostFrontMatter.createdAtTime()
 }
 
-func (p *Post) PostPath() string {
+func (p *Post) CreatedAtStr() string {
+	return p.CreatedAt().Format("2006-01-02")
+}
+
+func (p *Post) Path() string {
 	return fmt.Sprintf("/post/%s", p.Title)
+}
+
+func (p *Post) Category() string {
+	return p.PostFrontMatter.category()
 }

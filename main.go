@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	_ "github.com/adrg/frontmatter"
@@ -12,10 +12,10 @@ func main() {
 	// 加载配置文件 config.yml
 	config, err := readConf("./config.yml")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		os.Exit(-1)
 	}
-	loadData(config.BlogPath)
+	LoadData(config.BlogPath)
 	go watch(config.BlogPath)
 	app := iris.New()
 	setupRoutes(app)

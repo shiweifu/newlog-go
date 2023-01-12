@@ -15,7 +15,12 @@
           <a href="/">{{ pageTitle }}</a>
         </div>
         <div>
-          <ul>
+          <ul class="inline-block">
+            {{ range .pages }}
+            <li class="inline-block ml-4">
+                <a href="{{ .Path }}">{{ .Title }}</a>
+            </li>
+            {{ end }}
           </ul>
         </div>
       </nav>

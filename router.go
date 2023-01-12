@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"newlog-go/models"
 
 	"github.com/kataras/iris/v12"
@@ -9,6 +9,7 @@ import (
 
 var (
 	posts      = make([]*models.Post, 0)
+	pages      = make([]*models.Page, 0)
 	categories = make([]string, 0)
 )
 
@@ -23,8 +24,7 @@ func setupRoutes(app *iris.Application) {
 	tmpl.AddFunc("postsInCategory", func(category string) []*models.Post {
 		results := make([]*models.Post, 0)
 		for _, p := range posts {
-			fmt.Println(p.Category, category, p)
-			if p.Category == category {
+			if p.Category() == category {
 				results = append(results, p)
 			}
 		}
@@ -38,7 +38,7 @@ func setupRoutes(app *iris.Application) {
 	app.Get("/ping", ping)
 	app.Get("/html", index)
 	app.Get("/post/{title}", post)
-
+	app.Get("/page/{title}", page)
 }
 
 func ping(ctx iris.Context) {
@@ -47,7 +47,9 @@ func ping(ctx iris.Context) {
 
 func index(ctx iris.Context) {
 	ctx.ViewData("title", "My Page Title")
-	ctx.ViewData("categories", getCategories())
+	ctx.ViewData("categories", categories)
+	ctx.ViewData("pages", pages)
+
 	ctx.View("index.html")
 }
 
@@ -57,8 +59,24 @@ func post(ctx iris.Context) {
 	post, err := getPost(title)
 	if err != nil {
 		ctx.StatusCode(iris.StatusNotFound)
+		return
 	}
-	// 取消转义HTML
 	ctx.ViewData("post", post)
 	ctx.View("post")
+}
+
+func page(ctx iris.Context) {
+	title := ctx.Params().Get("title")
+	log.Println("title: ", title)
+	var page *models.Page
+	page, err := getPage(title)
+	if err != nil {
+		ctx.StatusCode(iris.StatusNotFound)
+		return
+	}
+
+	log.Println("page: ", page)
+
+	ctx.ViewData("page", page)
+	ctx.View("page")
 }

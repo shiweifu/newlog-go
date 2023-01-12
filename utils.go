@@ -9,22 +9,6 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-func getCategories() []string {
-	if len(categories) > 0 {
-		return categories
-	}
-	results := make([]string, 0)
-	for _, p := range posts {
-		// 如果已经包含分类，则继续
-		if contains(results, p.Category) {
-			continue
-		}
-		results = append(results, p.Category)
-	}
-	categories = results
-	return categories
-}
-
 func contains(results []string, s string) bool {
 	for _, v := range results {
 		if v == s {
@@ -43,30 +27,98 @@ func getPost(title string) (*models.Post, error) {
 	return nil, fmt.Errorf("post not found")
 }
 
-// 加载日志文件
-func loadData(blogPath string) {
+func getPage(title string) (*models.Page, error) {
+	for _, p := range pages {
+		if p.Title == title {
+			return p, nil
+		}
+	}
+	return nil, fmt.Errorf("post not found")
+}
+
+func getFolderFiles(path string) []string {
+	entries, err := os.ReadDir(path)
+	results := make([]string, 0)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, entry := range entries {
+		fileFullPath := path + "/" + entry.Name()
+		if !entry.IsDir() {
+			results = append(results, fileFullPath)
+		}
+	}
+	return results
+}
+
+func appendPost(postPath, defaultCategory string) {
+	post, err := models.NewPostFormPath(postPath, defaultCategory)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	posts = append(posts, post)
+}
+
+func appendPage(pagePath string) {
+	page, err := models.NewPageFormPath(pagePath)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	pages = append(pages, page)
+}
+
+func loadPosts(blogPath string) {
 	posts = make([]*models.Post, 0)
-	categories = make([]string, 0)
 	// 遍历文件夹，找出所有的 .md 文件
 	entries, err := os.ReadDir(blogPath)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		os.Exit(-1)
 	}
-	for _, item := range entries {
-		if !item.IsDir() {
-			fmt.Println(item.Name())
-			fullPath := blogPath + "/" + item.Name()
-			post, err := models.NewPostFormPath(fullPath)
-			// 读取文件内容
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(-1)
+	for _, entry := range entries {
+		// 目录名称作为分类名
+		if entry.IsDir() {
+			// 读取目录下的所有文件
+			fullDirPath := blogPath + "/" + entry.Name()
+			mdFiles := getFolderFiles(fullDirPath)
+			for _, mdFile := range mdFiles {
+				appendPost(mdFile, entry.Name())
 			}
-			posts = append(posts, post)
+		} else {
+			// 文件作为文章
+			appendPost(blogPath+"/"+entry.Name(), "")
 		}
 	}
-	_ = getCategories()
+}
+
+func loadPages(pagesPath string) {
+	// 遍历页面文件夹
+	pages = make([]*models.Page, 0)
+	mdFiles := getFolderFiles(pagesPath)
+
+	for _, mdFile := range mdFiles {
+		appendPage(mdFile)
+	}
+}
+
+func loadCategories() {
+	categories = make([]string, 0)
+	if len(categories) > 0 {
+		return
+	}
+	results := make([]string, 0)
+	for _, p := range posts {
+		// 如果已经包含分类，则继续
+		if contains(results, p.Category()) {
+			continue
+		}
+		results = append(results, p.Category())
+	}
+	categories = results
 }
 
 func watch(blogPath string) {
@@ -84,7 +136,7 @@ func watch(blogPath string) {
 					return
 				}
 				// 重新加载数据
-				loadData(blogPath)
+				LoadData(blogPath)
 				_ = event
 			case _, ok := <-watcher.Errors:
 				if !ok {
@@ -99,4 +151,13 @@ func watch(blogPath string) {
 		log.Fatal(err)
 	}
 	<-done
+}
+
+// 加载博客文件目录
+func LoadData(blogPath string) {
+	postsPath := blogPath + "/posts"
+	pagesPath := blogPath + "/pages"
+	loadPosts(postsPath)
+	loadCategories()
+	loadPages(pagesPath)
 }
