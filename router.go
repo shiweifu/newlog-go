@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"newlog-go/models"
 
 	"github.com/kataras/iris/v12"
@@ -17,8 +16,11 @@ func setupRoutes(app *iris.Application) {
 	app.HandleDir("/assets", iris.Dir("./assets"))
 	app.Use(iris.Compression)
 	tmpl := iris.HTML("./views", ".html").Layout("layout.html").Reload(true)
-	tmpl.AddLayoutFunc("pageTitle", func() string {
-		return "My Page Title"
+	app.Use(func(ctx iris.Context) {
+		ctx.ViewData("pageTitle", "hello")
+		ctx.ViewData("categories", categories)
+		ctx.ViewData("pages", pages)
+		ctx.Next()
 	})
 
 	tmpl.AddFunc("postsInCategory", func(category string) []*models.Post {
@@ -46,10 +48,6 @@ func ping(ctx iris.Context) {
 }
 
 func index(ctx iris.Context) {
-	ctx.ViewData("title", "My Page Title")
-	ctx.ViewData("categories", categories)
-	ctx.ViewData("pages", pages)
-
 	ctx.View("index.html")
 }
 
@@ -67,15 +65,12 @@ func post(ctx iris.Context) {
 
 func page(ctx iris.Context) {
 	title := ctx.Params().Get("title")
-	log.Println("title: ", title)
 	var page *models.Page
 	page, err := getPage(title)
 	if err != nil {
 		ctx.StatusCode(iris.StatusNotFound)
 		return
 	}
-
-	log.Println("page: ", page)
 
 	ctx.ViewData("page", page)
 	ctx.View("page")

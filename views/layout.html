@@ -5,14 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/assets/css/application.css" />
-    <title>{{ pageTitle }}</title>
+    <title>{{ .pageTitle }}</title>
   </head>
   <body>
-
       <div class="mt-4 mb-4">
       <nav class="container">
         <div class="logo text-xl font-medium">
-          <a href="/">{{ pageTitle }}</a>
+          <a href="/">{{ .pageTitle }}</a>
         </div>
         <div>
           <ul class="inline-block">
