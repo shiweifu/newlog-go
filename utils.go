@@ -33,7 +33,7 @@ func getPage(title string) (*models.Page, error) {
 			return p, nil
 		}
 	}
-	return nil, fmt.Errorf("post not found")
+	return nil, fmt.Errorf("page not found")
 }
 
 func getFolderFiles(path string) []string {

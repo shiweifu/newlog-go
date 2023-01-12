@@ -8,7 +8,16 @@ import (
 )
 
 type Config struct {
-	BlogPath string `yaml:"blog_path"`
+	BlogPath  string `yaml:"blog_path"`
+	BlogTitle string `yaml:"blog_title"`
+	Port      int    `yaml:"port"`
+}
+
+func (c *Config) GetPort() int {
+	if c.Port == 0 {
+		return 8080
+	}
+	return c.Port
 }
 
 func readConf(filename string) (*Config, error) {

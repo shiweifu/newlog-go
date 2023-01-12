@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -8,9 +9,12 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
+var config *Config
+
 func main() {
 	// 加载配置文件 config.yml
-	config, err := readConf("./config.yml")
+	var err error
+	config, err = readConf("./config.yml")
 	if err != nil {
 		log.Println(err)
 		os.Exit(-1)
@@ -19,5 +23,6 @@ func main() {
 	go watch(config.BlogPath)
 	app := iris.New()
 	setupRoutes(app)
-	app.Listen(":8080")
+	hostAndPort := fmt.Sprintf(":%d", config.GetPort())
+	app.Listen(hostAndPort)
 }

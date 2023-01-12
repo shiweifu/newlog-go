@@ -12,14 +12,32 @@ var (
 	categories = make([]string, 0)
 )
 
+var currentPage *models.Page
+var currentPost *models.Post
+
 func setupRoutes(app *iris.Application) {
 	app.HandleDir("/assets", iris.Dir("./assets"))
 	app.Use(iris.Compression)
 	tmpl := iris.HTML("./views", ".html").Layout("layout.html").Reload(true)
 	app.Use(func(ctx iris.Context) {
-		ctx.ViewData("pageTitle", "hello")
+		var pageTitle string
+
 		ctx.ViewData("categories", categories)
 		ctx.ViewData("pages", pages)
+		routerPath := ctx.GetCurrentRoute().Path()
+		title := ctx.Params().Get("title")
+
+		if routerPath == "/post/{title}" {
+			currentPost, _ = getPost(title)
+			pageTitle = config.BlogTitle + " - " + currentPost.Title
+		} else if routerPath == "/page/{title}" {
+			currentPage, _ = getPage(title)
+			pageTitle = config.BlogTitle + " - " + currentPage.Title
+		} else {
+			pageTitle = config.BlogTitle
+		}
+		ctx.ViewData("pageTitle", pageTitle)
+		ctx.ViewData("blogTitle", config.BlogTitle)
 		ctx.Next()
 	})
 
@@ -36,15 +54,14 @@ func setupRoutes(app *iris.Application) {
 	app.RegisterView(tmpl)
 
 	// 配置路由
-	// GET: http://localhost:8080/hello
 	app.Get("/ping", ping)
-	app.Get("/html", index)
+	app.Get("/", index)
 	app.Get("/post/{title}", post)
 	app.Get("/page/{title}", page)
 }
 
 func ping(ctx iris.Context) {
-	ctx.WriteString("Hello from the server!")
+	ctx.WriteString("let's go!")
 }
 
 func index(ctx iris.Context) {
@@ -52,26 +69,19 @@ func index(ctx iris.Context) {
 }
 
 func post(ctx iris.Context) {
-	title := ctx.Params().Get("title")
-	var post *models.Post
-	post, err := getPost(title)
-	if err != nil {
+	if currentPost == nil {
 		ctx.StatusCode(iris.StatusNotFound)
 		return
 	}
-	ctx.ViewData("post", post)
+	ctx.ViewData("post", currentPost)
 	ctx.View("post")
 }
 
 func page(ctx iris.Context) {
-	title := ctx.Params().Get("title")
-	var page *models.Page
-	page, err := getPage(title)
-	if err != nil {
+	if currentPage == nil {
 		ctx.StatusCode(iris.StatusNotFound)
 		return
 	}
-
-	ctx.ViewData("page", page)
+	ctx.ViewData("page", currentPage)
 	ctx.View("page")
 }

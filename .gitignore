@@ -50,3 +50,5 @@ dist/
 config.yml
 ./data/
 newlog-go
+
+.VSCodeCounter
