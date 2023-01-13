@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/assets/css/application.css" />
     <title>{{ .pageTitle }}</title>
+    <style>
+        {{ customCSS }}
+    </style>
   </head>
   <body>
       <div class="mt-4 mb-4">
@@ -33,4 +36,7 @@
     {{/* {{ render "partials/footer.html" . }} */}}
   </body>
   <script src="/assets/js/application.js"></script>
+  <script>
+    {{ customJS }}
+  </script>
 </html>

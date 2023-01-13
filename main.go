@@ -23,6 +23,7 @@ func main() {
 	go watch(config.BlogPath)
 	app := iris.New()
 	setupRoutes(app)
+	setupLogger(app)
 	hostAndPort := fmt.Sprintf(":%d", config.GetPort())
 	app.Listen(hostAndPort)
 }

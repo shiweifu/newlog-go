@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"newlog-go/models"
 	"os"
@@ -121,6 +122,26 @@ func loadCategories() {
 	categories = results
 }
 
+func loadCustom() {
+	// 读取自定义的 CSS
+	cssFilePath := config.BlogPath + "custom/custom.css"
+	jsFilePath := config.BlogPath + "custom/custom.js"
+
+	// 读取自定义的 JS
+	cssContent, err := os.ReadFile(cssFilePath)
+
+	if err != nil {
+		log.Println(err)
+	}
+	jsContent, err := os.ReadFile(jsFilePath)
+	if err != nil {
+		log.Println(err)
+	}
+
+	customCSS = template.CSS(cssContent)
+	customJS = template.JS(jsContent)
+}
+
 func watch(blogPath string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -160,4 +181,5 @@ func LoadData(blogPath string) {
 	loadPosts(postsPath)
 	loadCategories()
 	loadPages(pagesPath)
+	loadCustom()
 }
