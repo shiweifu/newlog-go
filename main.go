@@ -10,6 +10,7 @@ import (
 )
 
 var config *Config
+var Env string
 
 func main() {
 	// 加载配置文件 config.yml
