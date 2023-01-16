@@ -6,7 +6,7 @@ import (
 	_ "github.com/urfave/cli/v2/altsrc"
 )
 
-func NewCliApp() *cli.NewApp {
+func NewCliApp() *cli.App {
 	cliApp := cli.NewApp()
 	cliApp.Name = "markdown-blog"
 	cliApp.Usage = "Markdown Blog App"

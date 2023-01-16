@@ -6,6 +6,7 @@ import (
 	"log"
 	"newlog-go/models"
 	"os"
+	"sort"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -104,6 +105,9 @@ func loadPages(pagesPath string) {
 	for _, mdFile := range mdFiles {
 		appendPage(mdFile)
 	}
+
+	// 排序
+	sort.Sort(models.Pages(pages))
 }
 
 func loadCategories() {

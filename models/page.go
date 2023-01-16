@@ -62,3 +62,17 @@ func NewPage(frontMatter *PageFrontMatter, mdContent string) *Page {
 func (p *Page) Path() string {
 	return fmt.Sprintf("/page/%s", p.Title)
 }
+
+type Pages []*Page
+
+func (ps Pages) Len() int {
+	return len(ps)
+}
+
+func (ps Pages) Less(i, j int) bool {
+	return ps[i].Index < ps[j].Index
+}
+
+func (ps Pages) Swap(i, j int) {
+	ps[i], ps[j] = ps[j], ps[i]
+}

@@ -6,6 +6,8 @@ require (
 	github.com/adrg/frontmatter v0.2.0
 	github.com/fsnotify/fsnotify v1.5.4
 	github.com/kataras/iris/v12 v12.2.0-beta7.0.20230108120541-fe46dadc264b
+	github.com/urfave/cli v1.22.11
+	github.com/urfave/cli/v2 v2.23.7
 	github.com/yuin/goldmark v1.5.3
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -18,6 +20,7 @@ require (
 	github.com/Shopify/goreferrer v0.0.0-20220729165902-8cddb4f5de06 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/eknkc/amber v0.0.0-20171010120322-cdade1c07385 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
@@ -46,6 +49,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
+	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	github.com/yosssi/ace v0.0.5 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/net v0.5.0 // indirect
