@@ -11,6 +11,56 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
+var AboutPageContent string = `
+---
+title: 关于
+index: 1
+private: false
+---
+
+关于本日志系统
+
+所有在 pages 目录下的内容，将被识别为页面
+
+pages 内容支持三个元属性：
+
+ - title: 页面标题
+ - index: 页面在导航栏中的位置
+ - private: 页面是被渲染
+`
+
+var ContactPageContent string = `
+---
+title: 联系
+index: 2
+private: false
+---
+
+联系我以及其他链接
+`
+
+var PostContent string = `
+---
+title: 《小强升职记》读后感
+private: true
+created_at: "2022-11-10"
+category: "2022"
+---
+
+这是一篇测试文章。
+
+日志放在 posts 目录下，文件名为文章标题，文件内容为文章内容。
+
+posts 目录下的文件支持四个元属性：
+
+ - title: 文章标题。如果没有，将使用文件名作为标题
+ - private: 文章是否被渲染。默认为 false
+ - created_at: 文章创建时间。如果没有，将使用文件创建时间
+ - category: 文章分类。如果不指定：
+  - 寻找日志是否存在一级目录，如果存在，将使用一级目录作为分类
+  - 如果不存在，则使用创建日期的年份作为分类
+`
+
 func contains(results []string, s string) bool {
 	for _, v := range results {
 		if v == s {
