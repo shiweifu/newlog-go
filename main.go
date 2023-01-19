@@ -111,20 +111,25 @@ func newBlogDataCustom(basePath string) error {
 }
 
 func NewBlogData(path string) error {
+	fmt.Println("Creating new blog data at " + path + "...")
+	fmt.Println("Creating blog pages data...")
 	err := newBlogDataPages(path)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("Creating blog posts data...")
 	err = newBlogDataPosts(path)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("Creating blog custom data...")
 	err = newBlogDataCustom(path)
 	if err != nil {
 		return err
 	}
+	fmt.Println("Create blog data success!")
 	return nil
 }
 

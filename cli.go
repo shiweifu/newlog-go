@@ -11,8 +11,8 @@ import (
 
 func NewCliApp() *cli.App {
 	cliApp := cli.NewApp()
-	cliApp.Name = "markdown-blog"
-	cliApp.Usage = "Markdown Blog App"
+	cliApp.Name = "newlog"
+	cliApp.Usage = "a simple blog system"
 	cliApp.Action = func(*cli.Context) error {
 		fmt.Println("boom! I say!")
 		return nil
@@ -48,6 +48,16 @@ func NewCliApp() *cli.App {
 				fi, err := os.Stat(blogPath)
 				if err != nil || !fi.IsDir() {
 					return fmt.Errorf("blog path is not a directory")
+				}
+
+				// 判断该目录是否为空
+				entries, err := os.ReadDir(blogPath)
+				if err != nil {
+					return err
+				}
+
+				if len(entries) > 0 {
+					return fmt.Errorf("blog path must not contain any files")
 				}
 
 				return NewBlogData(blogPath)
