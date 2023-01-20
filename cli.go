@@ -14,7 +14,6 @@ func NewCliApp() *cli.App {
 	cliApp.Name = "newlog"
 	cliApp.Usage = "a simple blog system"
 	cliApp.Action = func(*cli.Context) error {
-		fmt.Println("boom! I say!")
 		return nil
 	}
 
@@ -58,6 +57,31 @@ func NewCliApp() *cli.App {
 
 				if len(entries) > 0 {
 					return fmt.Errorf("blog path must not contain any files")
+				}
+
+				currDir, err := os.Getwd()
+				if err != nil {
+					cfgPath := currDir + "/config.yml"
+					// 判断配置是否存在
+					if _, err := os.Stat(cfgPath); err != nil {
+						// 文件不存在，创建
+						file, fileErr := os.Create(cfgPath)
+						if fileErr != nil {
+							return fileErr
+						}
+						cfgContent := fmt.Sprintf(CfgDefaultContent, blogPath)
+						// 写入内容
+						_, writeErr := file.WriteString(cfgContent)
+						if writeErr != nil {
+							return writeErr
+						}
+						file.Close()
+					}
+				}
+
+				// 判断当前目录下是否有 config.yml 文件
+				if _, err := os.Stat(blogPath + "/config.yml"); err == nil {
+					return fmt.Errorf("config.yml already exists")
 				}
 
 				return NewBlogData(blogPath)

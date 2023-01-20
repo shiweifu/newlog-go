@@ -11,6 +11,13 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
+var CfgDefaultContent string = `
+blog_path: "%s"
+blog_title: newlog
+port: 8080
+env: production
+`
+
 var AboutPageContent string = `
 ---
 title: 关于
