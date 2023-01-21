@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/urfave/cli"
 	_ "github.com/urfave/cli/v2"
@@ -59,29 +60,28 @@ func NewCliApp() *cli.App {
 					return fmt.Errorf("blog path must not contain any files")
 				}
 
-				currDir, err := os.Getwd()
-				if err != nil {
-					cfgPath := currDir + "/config.yml"
-					// 判断配置是否存在
-					if _, err := os.Stat(cfgPath); err != nil {
-						// 文件不存在，创建
-						file, fileErr := os.Create(cfgPath)
-						if fileErr != nil {
-							return fileErr
-						}
-						cfgContent := fmt.Sprintf(CfgDefaultContent, blogPath)
-						// 写入内容
-						_, writeErr := file.WriteString(cfgContent)
-						if writeErr != nil {
-							return writeErr
-						}
-						file.Close()
+				currDir, _ := os.Getwd()
+				fmt.Println("curr dir: ", currDir)
+				cfgPath := path.Join(currDir, "config.yml")
+				// 判断配置是否存在
+				fmt.Println("cfg path: ", cfgPath)
+				if _, err := os.Stat(cfgPath); err != nil {
+					if !os.IsNotExist(err) {
+						return err
 					}
-				}
 
-				// 判断当前目录下是否有 config.yml 文件
-				if _, err := os.Stat(blogPath + "/config.yml"); err == nil {
-					return fmt.Errorf("config.yml already exists")
+					// 文件不存在，创建
+					file, fileErr := os.Create(cfgPath)
+					if fileErr != nil {
+						return fileErr
+					}
+					cfgContent := fmt.Sprintf(CfgDefaultContent, blogPath)
+					// 写入内容
+					_, writeErr := file.WriteString(cfgContent)
+					if writeErr != nil {
+						return writeErr
+					}
+					file.Close()
 				}
 
 				return NewBlogData(blogPath)

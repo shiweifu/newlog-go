@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 
 	_ "github.com/adrg/frontmatter"
 	"github.com/kataras/iris/v12"
@@ -31,14 +32,14 @@ func NewServer() {
 
 func newBlogDataPages(basePath string) error {
 	// 创建目录
-	pagesPath := basePath + "/pages"
+	pagesPath := path.Join(basePath, "pages")
 	err := os.Mkdir(pagesPath, os.ModePerm)
 	if err != nil {
 		return err
 	}
 	// 创建页面文件
-	aboutPath := pagesPath + "/about.md"
-	contactPath := pagesPath + "/contact.md"
+	aboutPath := path.Join(pagesPath, "about.md")
+	contactPath := path.Join(pagesPath, "contact.md")
 	// 创建文件
 	aboutFile, err := os.Create(aboutPath)
 	if err != nil {
@@ -65,13 +66,13 @@ func newBlogDataPages(basePath string) error {
 
 func newBlogDataPosts(basePath string) error {
 	// 创建目录
-	postsPath := basePath + "/posts"
+	postsPath := path.Join(basePath, "posts")
 	err := os.Mkdir(postsPath, os.ModePerm)
 	if err != nil {
 		return err
 	}
 	// 创建页面文件
-	testPath := postsPath + "/test.md"
+	testPath := path.Join(postsPath, "test.md")
 	// 创建文件
 	testFile, err := os.Create(testPath)
 	if err != nil {
@@ -87,12 +88,12 @@ func newBlogDataPosts(basePath string) error {
 }
 
 func newBlogDataCustom(basePath string) error {
-	customPath := basePath + "/custom"
+	customPath := path.Join(basePath, "custom")
 	err := os.Mkdir(customPath, os.ModePerm)
 	if err != nil {
 		return err
 	}
-	cssPath := customPath + "/custom.css"
+	cssPath := path.Join(customPath, "custom.css")
 	// 创建文件
 	cssFile, err := os.Create(cssPath)
 	if err != nil {
@@ -100,7 +101,7 @@ func newBlogDataCustom(basePath string) error {
 	}
 	cssFile.Close()
 
-	jsPath := customPath + "/custom.js"
+	jsPath := path.Join(customPath, "custom.js")
 	// 创建文件
 	jsFile, err := os.Create(jsPath)
 	if err != nil {
