@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"newlog-go/models"
+	"path"
 
 	"github.com/kataras/iris/v12"
 )
@@ -25,7 +26,7 @@ var customJS template.JS
 var customCSS template.CSS
 
 func setupRoutes(app *iris.Application) {
-	favPath := config.BlogPath + "custom/favicon.ico"
+	favPath := path.Join(config.BlogPath, "custom/favicon.ico")
 	app.Favicon(favPath)
 	app.HandleDir("/assets", iris.Dir("./assets"))
 	app.Use(iris.Compression)

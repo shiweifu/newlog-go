@@ -6,6 +6,7 @@ import (
 	"log"
 	"newlog-go/models"
 	"os"
+	"path"
 	"sort"
 
 	"github.com/fsnotify/fsnotify"
@@ -185,8 +186,8 @@ func loadCategories() {
 
 func loadCustom() {
 	// 读取自定义的 CSS
-	cssFilePath := config.BlogPath + "custom/custom.css"
-	jsFilePath := config.BlogPath + "custom/custom.js"
+	cssFilePath := path.Join(config.BlogPath, "custom/custom.css")
+	jsFilePath := path.Join(config.BlogPath, "custom/custom.js")
 
 	// 读取自定义的 JS
 	cssContent, err := os.ReadFile(cssFilePath)
