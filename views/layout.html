@@ -13,13 +13,13 @@
   <body>
       <div class="mt-4 mb-4">
       <nav class="container">
-        <div class="logo text-xl font-medium">
+        <div class="logo text-xl font-bold">
           <a href="/">{{ .blogTitle }}</a>
         </div>
         <div>
           <ul class="inline-block">
             {{ range .pages }}
-            <li class="inline-block ml-4">
+            <li class="inline-block ml-4 nav-link">
                 <a href="{{ .Path }}">{{ .Title }}</a>
             </li>
             {{ end }}

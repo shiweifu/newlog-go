@@ -2,12 +2,12 @@
   <div class="mt-4 w-full">
     {{ range .categories }}
     <div class="mt-6">
-      <h2 class="text-2xl bolder border-b pb-3">{{.}}</h2>
+      <h2 class="text-2xl bolder border-b pb-3 font-semibold">{{.}}</h2>
       {{ range postsInCategory . }}
       <div class="post">
         <a href="{{ .Path }}">
           <div
-            class="post__item flex justify-between items-center py-2 my-2 border-b border-dotted"
+            class="post__item justify-between items-center py-2 my-2 post-link"
           >
             <h2 class="text-xl">{{ .Title }}</h2>
             <span class="text-sm font-normal">{{ .CreatedAtStr }}</span>

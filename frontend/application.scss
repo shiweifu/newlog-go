@@ -19,6 +19,64 @@ nav.container {
   @apply mt-4;
 }
 
+.nav-link {
+  @apply text-gray-900;
+  @apply pb-1;
+  @apply border-gray-900;
+
+  &:hover {
+    a::after {
+      visibility: visible;
+      @apply transition-all;
+    }
+  }
+
+  a {
+    @apply relative;
+
+    &::after {
+      position: absolute;
+      content: "";
+      width: 100%;
+      height: 0.5px;
+      background: #000;
+      bottom: -4px;
+      left: 0;
+      visibility: hidden;
+    }
+  }
+}
+
+.post-link {
+  @apply text-gray-900;
+  @apply pb-1;
+  @apply border-gray-900;
+  height: 50px;
+  box-sizing: border-box;
+  display: flex;
+  h2 {
+    @apply relative;
+
+    &::after {
+      position: absolute;
+      content: "";
+      width: 100%;
+      height: 0.5px;
+      background: #000;
+      bottom: -4px;
+      left: 0;
+      visibility: hidden;
+    }
+  }
+
+  &:hover {
+    h2::after {
+      visibility: visible;
+      @apply transition-all;
+    }
+  }
+}
+
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
