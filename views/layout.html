@@ -19,9 +19,16 @@
         <div>
           <ul class="inline-block">
             {{ range .pages }}
+
+            {{ if eq .Title $.navLinkTitle }}
+            <li class="inline-block ml-4 nav-link is-active">
+                <a href="{{ .Path }}">{{ .Title }}</a>
+            </li>
+            {{ else }}
             <li class="inline-block ml-4 nav-link">
                 <a href="{{ .Path }}">{{ .Title }}</a>
             </li>
+            {{ end }}
             {{ end }}
           </ul>
         </div>

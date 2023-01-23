@@ -33,6 +33,7 @@ func setupRoutes(app *iris.Application) {
 	tmpl := iris.HTML("./views", ".html").Layout("layout.html").Reload(true)
 	app.Use(func(ctx iris.Context) {
 		var pageTitle string
+		var navLinkTitle string
 
 		ctx.ViewData("categories", categories)
 		ctx.ViewData("pages", pages)
@@ -45,11 +46,13 @@ func setupRoutes(app *iris.Application) {
 		} else if routerPath == PageRoutePath {
 			currentPage, _ = getPage(title)
 			pageTitle = config.BlogTitle + " - " + currentPage.Title
+			navLinkTitle = title
 		} else {
 			pageTitle = config.BlogTitle
 		}
 		ctx.ViewData("pageTitle", pageTitle)
 		ctx.ViewData("blogTitle", config.BlogTitle)
+		ctx.ViewData("navLinkTitle", navLinkTitle)
 		ctx.Next()
 	})
 
@@ -64,6 +67,10 @@ func setupRoutes(app *iris.Application) {
 			return results
 		},
 	)
+
+	tmpl.AddLayoutFunc("NavTitle", func(navLinkTitle string) string {
+		return navLinkTitle
+	})
 
 	tmpl.AddFunc(
 		"customCSS",

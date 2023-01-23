@@ -1742,6 +1742,10 @@ nav.container {
   }
 }
 
+.nav-link.is-active a:after {
+  visibility: visible;
+}
+
 .nav-link {
   --tw-text-opacity: 1;
   color: rgb(17 24 39 / var(--tw-text-opacity));

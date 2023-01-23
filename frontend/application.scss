@@ -19,6 +19,14 @@ nav.container {
   @apply mt-4;
 }
 
+.nav-link.is-active {
+  a {
+    &::after {
+      visibility: visible;
+    }
+  }
+}
+
 .nav-link {
   @apply text-gray-900;
   @apply pb-1;
